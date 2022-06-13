@@ -1,9 +1,9 @@
 package calcRA;
-
-import java.util.InputMismatchException;
 import java.util.Scanner;
 public class RomanArabianCalc {
     static Scanner scanner = new Scanner(System.in);
+    static int min = 1;
+    static int max = 10;
     static int a, b;
     static char o;
     static int r;
@@ -31,21 +31,48 @@ public class RomanArabianCalc {
         String stable00 = blacks[0];
         String stable01 = blacks[1];
         String string03 = stable01.trim();
-        a = romanToNumber(stable00);
-        b = romanToNumber(string03);
+            a = romanToNumber(stable00);
+            b = romanToNumber(string03);
+
         if (a < 0 && b < 0) {
             r = 0;
         } else {
             r = calculated(a, b, o);
-            String rRoman = convertNumToRoman(r);
-            System.out.println(stable00 + " " + o + " " + string03 + " = " + rRoman);
+            String rRoman = convertNumToRoman((char) r);
+            System.out.println(rRoman);
         }
-        a = Integer.parseInt(stable00);
-        b = Integer.parseInt(string03);
+        try {
+            a = Integer.parseInt(stable00);
+            b = Integer.parseInt(string03);
+        } catch (NumberFormatException e) {
+            //ignore
+        }
+
+        switch (under_char[3]) {
+            case '+','*','/','-' -> throw new IllegalArgumentException("укажите не более двух операндов");
+        }
+        switch (under_char[4]) {
+            case '+','*','/','-' -> throw new IllegalArgumentException("укажите не более двух операндов");
+        }
+        switch (under_char[5]) {
+            case '+','*','/','-' -> throw new IllegalArgumentException("укажите не более двух операндов");
+        }
+        if (a<min) {
+            throw new IllegalArgumentException("укажите значения меньше 11 и больше 0");
+        }
+        if (b<min) {
+            throw new IllegalArgumentException("укажите значения меньше 11 и больше 0");
+        }
+        if (a>max) {
+            throw new IllegalArgumentException("укажите значения меньше 11 и больше 0");
+        }
+        if (b>max) {
+            throw new IllegalArgumentException("укажите значения меньше 11 и больше 0");
+        }
         r = calculated(a, b, o);
-        System.out.println(a + " " + o + " " + b + " = " + r);
+        System.out.println(r);
     }
-    private static String convertNumToRoman (int numArabian) {
+    private static String convertNumToRoman (char numArabian) {
         String[] roman = {"O", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII", "XIII", "XIV", "XV", "XVI", "XVII", "XVIII", "XIX", "XX",
                 "XXI", "XXII", "XXIII", "XXIV", "XXV", "XXVI", "XXVII", "XXVIII", "XXIX", "XXX", "XXXI", "XXXII", "XXXIII", "XXXIV", "XXXV", "XXXVI", "XXXVII", "XXXVIII", "XXXIX", "XL",
                 "XLI", "XLII", "XLIII", "XLIV", "XLV", "XLVI", "XLVII", "XLVIII", "XLIX", "L", "LI", "LII", "LIII", "LIV", "LV", "LVI", "LVII", "LVIII", "LIX", "LX",
@@ -57,48 +84,28 @@ public class RomanArabianCalc {
         return roman[numArabian];
     }
     private static int romanToNumber (String roman) {
-        try {
-            return switch (roman) {
-                case "I" -> 1;
-                case "II" -> 2;
-                case "III" -> 3;
-                case "IV" -> 4;
-                case "V" -> 5;
-                case "VI" -> 6;
-                case "VII" -> 7;
-                case "VIII" -> 8;
-                case "IX" -> 9;
-                case "X" -> 10;
-                default -> -1;
+        return switch (roman) {
+            case "I" -> 1;
+            case "II" -> 2;
+            case "III" -> 3;
+            case "IV" -> 4;
+            case "V" -> 5;
+            case "VI" -> 6;
+            case "VII" -> 7;
+            case "VIII" -> 8;
+            case "IX" -> 9;
+            case "X" -> 10;
+            default -> -1;
             };
-        } catch (Exception e) {
-            throw new RuntimeException(e);
         }
-    }
-    public static int calculated (int num1, int num2, char op) {
-        int r = 0;
-        switch (op) {
-            case '+':
-                r = num1 + num2;
-                break;
-            case '-':
-                r = num1 - num2;
-                break;
-            case '*':
-                r = num1 * num2;
-                break;
-            case '/':
-                try {
-                    r = num1 / num2;
-                } catch (ArithmeticException | InputMismatchException e) {
-                    System.out.println("Exception : " + e);
-                    System.out.println("Укажите целое число больше нуля ");
-                    break;
-                }
-                break;
-            default:
-                throw new IllegalArgumentException("Выражение некорректно.");
-        }
+    public static int calculated (int a, int b, char o) {
+        int r = switch (o) {
+            case '+' -> a + b;
+            case '-' -> a - b;
+            case '*' -> a * b;
+            case '/' -> a / b;
+            default -> throw new IllegalArgumentException("Укажите верный знак действия");
+        };
         return r;
     }
 }
